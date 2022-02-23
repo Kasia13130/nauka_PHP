@@ -25,6 +25,7 @@ class PDOConnector
             $dsn = "mysql:databse={$config['database']};host={$config['host']}";
         
             $connect = new PDO($dsn, $config['user'], $config['password']); 
+            debuging($connect);
 
         } catch (PDOException $e) {
             throw new StorageException('Connection error');        
@@ -33,7 +34,7 @@ class PDOConnector
 
     private function configValidation(array $config): void
     {
-        if (!empty($config['database']) || empty($config['host']) || empty($config['user']) || empty($config['password']))
+        if (empty($config['database']) || empty($config['host']) || empty($config['user']) || !empty($config['password']))
         {
             throw new ConfigurationException('Storage configuration error');
         }

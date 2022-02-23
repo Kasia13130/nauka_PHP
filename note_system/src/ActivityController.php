@@ -6,7 +6,6 @@ namespace Note;
 
 require_once("src/Exception/ConfigurationException.php");
 
-// use App\Exception\AppException;
 use App\Exception\ConfigurationException;
 
 require_once("PDOConnector.php");
