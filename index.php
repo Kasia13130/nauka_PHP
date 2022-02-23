@@ -21,9 +21,6 @@ $request = [
 
 try {
 
-// $activitycontroller = new ActivityController($request);
-// $activitycontroller->runApp();
-
 // wywolanie metody konfiguracyjnej
 ActivityController::initConfig($config);
 
