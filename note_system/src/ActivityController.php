@@ -49,18 +49,19 @@ class ActivityController
         switch ($this->activitiesRecognition())
         {
             case 'createNote':
-                $page = 'createNote';
-                $noteCreated = false;
-        
+                $page = 'createNote';     
                 $postData = $this->getRequestPost();
                 
                 if (!empty($postData))
                 {   
-                    $noteCreated = true;
-                    $this->pdoConnector->createNote($postData);
-                    header("Location: index.php");
+                    $noteData = [
+                        'title' => $postData['title'],
+                        'description' => $postData['description']
+                    ];
+                    $this->pdoConnector->createNote($noteData);
+                    header("Location: ./?before=createdNote");
                 }
-                $arrayViewParameters['created'] = $noteCreated;
+
                 break;
         
             case 'showNote':
@@ -72,7 +73,10 @@ class ActivityController
                 
             default:
                 $page = 'noteList';
-                $arrayViewParameters['resultListNotes'] = "wyświetlona lista notatek";
+
+                $getData = $this->getRequestGet();
+
+                $arrayViewParameters['before'] = $getData['before'] ?? null;
                 break;
         }
 

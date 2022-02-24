@@ -6,7 +6,6 @@ namespace Note;
 
 use App\Exception\AppExcepttion;
 use App\Exception\ConfigurationException;
-// use Kotek;
 use Throwable;
 
 require_once("src/Utils/debug.php");
