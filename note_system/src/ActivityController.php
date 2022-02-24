@@ -17,6 +17,7 @@ class ActivityController
 
     private static array $config = [];
 
+    private PDOConnector $pdoConnector;
     private $request;
     private $view;
 
@@ -32,7 +33,7 @@ class ActivityController
         if (empty(self::$config['database'])) {
             throw new ConfigurationException('Configuration error');
         }
-        $database = new PDOConnector(self::$config['database']);
+        $this->pdoConnector = new PDOConnector(self::$config['database']);
         
         $this->request = $request;
         $this->view = new View();
@@ -52,13 +53,12 @@ class ActivityController
                 $noteCreated = false;
         
                 $postData = $this->getRequestPost();
+                
                 if (!empty($postData))
                 {   
                     $noteCreated = true;
-                    $arrayViewParameters = [
-                        'title' => $postData['title'],
-                        'description' => $postData['description']
-                    ];
+                    $this->pdoConnector->createNote($postData);
+                    header("Location: index.php");
                 }
                 $arrayViewParameters['created'] = $noteCreated;
                 break;
