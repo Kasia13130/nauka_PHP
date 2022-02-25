@@ -1,5 +1,18 @@
 <div class="listNotes">
     <section>
+    <div class="noteMessage">
+            <?php if (!empty($viewParameters['error'])) {
+                switch ($viewParameters['error']) {
+                    case 'missingNoteId':
+                        echo 'Brakuje identyfikatora notatki';
+                        break;
+                    case 'noteNotFound':
+                        echo 'Nie znaleziono notatki';
+                        break;
+                }
+            } ?>
+        </div>
+
         <div class="noteMessage">
             <?php if (!empty($viewParameters['before'])) {
                 switch ($viewParameters['before']) {
@@ -31,7 +44,9 @@
                             <td><?php echo htmlentities($note['title']); ?></td>
                             <td><?php echo htmlentities($note['create_date']); ?></td>
                             <td>
-                                <a href="./?action=showNote&id=<?php echo (int) $note['id']; ?>">Wyświetl notatkę</a>
+                                <a href="./?action=showNote&id=<?php echo (int) $note['id']; ?>">
+                                <button>Wyświetl notatkę</button>
+                                </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

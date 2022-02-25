@@ -38,8 +38,6 @@ class ActivityController
         
         $this->request = $request;
         $this->view = new View();
-
-        // debuging(self::$config);
     }
 
     public function runApp(): void
@@ -61,6 +59,7 @@ class ActivityController
                     ];
                     $this->pdoConnector->createNote($noteData);
                     header("Location: ./?before=createdNote");
+                    exit;
                 }
 
                 break;
@@ -69,21 +68,26 @@ class ActivityController
                 $page = 'showNote';
 
                 $noteData = $this->getRequestGet();
-                $noteId = (int) $noteData['id'];
+                $noteId = (int) ($noteData['id'] ?? null);
+              
+                if (!$noteId)
+                {
+                    header("Location: ./?error=missingNoteId");
+                    exit;
+                }
 
                 try
                 {
-                    $this->pdoConnector->getNote($noteId);
+                    $note = $this->pdoConnector->getNote($noteId);
                 }
                 catch (NotFoundException $e)
                 {
-                    exit('kontroler');
+                    header("Location: ./?error=noteNotFound");
+                    exit;
                 }
-
                 
                 $arrayViewParameters = [
-                    'title' => 'Utworzona notatka',
-                    'description' => 'Treść notatki'
+                    'note' => $note
                 ];
                 break;
                 
@@ -94,7 +98,9 @@ class ActivityController
 
                 $arrayViewParameters = [
                     'notes' => $this->pdoConnector->getNotes(),
-                    'before' => $getData['before'] ?? null
+                    'before' => $getData['before'] ?? null,
+                    'error' => $getData['error'] ?? null,
+                    'error' => $getData['error'] ?? null
                 ];
                 break;
         }
