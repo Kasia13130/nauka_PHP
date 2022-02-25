@@ -72,18 +72,18 @@ class ActivityController
                 break;
                 
             default:
-                $page = 'noteList';
 
+                $page = 'noteList';
                 $getData = $this->getRequestGet();
 
-                $notes = $this->pdoConnector->getNotes();
-                debuging($notes);
-                
-                $arrayViewParameters['before'] = $getData['before'] ?? null;
+                $arrayViewParameters = [
+                    'notes' => $this->pdoConnector->getNotes(),
+                    'before' => $getData['before'] ?? null
+                ];
                 break;
         }
 
-        $this->view->render($page, $arrayViewParameters);
+        $this->view->render($page, $arrayViewParameters ?? []);
     }
 
     // metoda dostepowa do post

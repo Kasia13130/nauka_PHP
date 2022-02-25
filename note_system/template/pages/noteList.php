@@ -16,6 +16,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Tytuł</th>
+                        <th>Data</th>
                         <th>Opcje</th>
                     </tr>
                 </thead>
@@ -24,7 +25,14 @@
         <div class="tbl-content">
             <table cellpadding="1" cellspacing="1" border="0.5">
                 <tbody>
-
+                    <?php foreach ($viewParameters['notes'] as $note) : ?>
+                        <tr>
+                            <td><?php echo $note['id']; ?></td>
+                            <td><?php echo $note['title']; ?></td>
+                            <td><?php echo $note['create_date']; ?></td>
+                            <td>Opcje</td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
 

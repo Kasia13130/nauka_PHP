@@ -69,7 +69,7 @@ class PDOConnector
 
     private function createDatabaseConnection(array $config): void
     {
-        $dsn = "mysql:databse={$config['database']};host={$config['host']}";
+        $dsn = "mysql:database={$config['database']};host={$config['host']}";
         
         $this->connect = new PDO($dsn, $config['user'], $config['password'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)); 
         // debuging($connect);
