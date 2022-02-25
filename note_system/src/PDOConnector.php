@@ -10,6 +10,7 @@ require_once("Exception/AppException.php");
 use App\Exception\AppException;
 use App\Exception\ConfigurationException;
 use App\Exception\StorageException;
+use Exception;
 use PDO;
 use PDOException;
 use Throwable;
@@ -48,6 +49,22 @@ class PDOConnector
             throw new StorageException('Utoworzenie nowej notatki się nie powiodło.', 400, $e);
             exit;
         }        
+    }
+
+    public function getNotes(): array
+    {
+        try 
+        {
+            $sqlQuery = "SELECT id, title, create_date FROM note_system.notes";
+
+            $result = $this->connect->query($sqlQuery);
+            return $result->fetchAll(PDO::FETCH_ASSOC);           
+        }
+        catch (Throwable $e)
+        {
+            throw new StorageException("Nie pobrano informacji o notatkach", 400, $e);
+        }
+        
     }
 
     private function createDatabaseConnection(array $config): void

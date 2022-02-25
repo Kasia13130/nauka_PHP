@@ -76,6 +76,9 @@ class ActivityController
 
                 $getData = $this->getRequestGet();
 
+                $notes = $this->pdoConnector->getNotes();
+                debuging($notes);
+                
                 $arrayViewParameters['before'] = $getData['before'] ?? null;
                 break;
         }
