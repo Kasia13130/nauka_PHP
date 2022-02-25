@@ -25,12 +25,14 @@
         <div class="tbl-content">
             <table cellpadding="1" cellspacing="1" border="0.5">
                 <tbody>
-                    <?php foreach ($viewParameters['notes'] as $note) : ?>
+                    <?php foreach ($viewParameters['notes'] ?? [] as $note) : ?>
                         <tr>
-                            <td><?php echo $note['id']; ?></td>
-                            <td><?php echo $note['title']; ?></td>
-                            <td><?php echo $note['create_date']; ?></td>
-                            <td>Opcje</td>
+                            <td><?php echo (int) $note['id']; ?></td>
+                            <td><?php echo htmlentities($note['title']); ?></td>
+                            <td><?php echo htmlentities($note['create_date']); ?></td>
+                            <td>
+                                <a href="./?action=showNote&id=<?php echo (int) $note['id']; ?>">Wyświetl notatkę</a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

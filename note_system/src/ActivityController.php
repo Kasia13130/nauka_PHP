@@ -7,6 +7,7 @@ namespace Note;
 require_once("src/Exception/ConfigurationException.php");
 
 use App\Exception\ConfigurationException;
+use App\Exception\NotFoundException;
 
 require_once("PDOConnector.php");
 require_once("View.php");
@@ -65,6 +66,21 @@ class ActivityController
                 break;
         
             case 'showNote':
+                $page = 'showNote';
+
+                $noteData = $this->getRequestGet();
+                $noteId = (int) $noteData['id'];
+
+                try
+                {
+                    $this->pdoConnector->getNote($noteId);
+                }
+                catch (NotFoundException $e)
+                {
+                    exit('kontroler');
+                }
+
+                
                 $arrayViewParameters = [
                     'title' => 'Utworzona notatka',
                     'description' => 'Treść notatki'

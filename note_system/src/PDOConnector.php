@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Note;
 
 require_once("Exception/StorageException.php");
-require_once("Exception/AppException.php");
+require_once("Exception/NotFoundException.php");
 
-use App\Exception\AppException;
 use App\Exception\ConfigurationException;
 use App\Exception\StorageException;
-use Exception;
+use App\Exception\NotFoundException;
 use PDO;
 use PDOException;
 use Throwable;
@@ -49,6 +48,28 @@ class PDOConnector
             throw new StorageException('Utoworzenie nowej notatki się nie powiodło.', 400, $e);
             exit;
         }        
+    }
+
+    public function getNote(int $id): array
+    {
+        try
+        {
+            $sqlQuery = "SELECT * FROM note_system.notes WHERE id=$id";
+
+            $result = $this->connect->query($sqlQuery);
+            $note = $result->fetch(PDO::FETCH_ASSOC);            
+        }
+        catch (Throwable $e)
+        {
+            throw new StorageException('Błąd przy wyświetleniu notatki', 400, $e);
+        }
+
+        if (!$note)
+        {
+            throw new NotFoundException("Notatka o takim id: $id nie istnieje.");
+            exit('Brak takiej notatki');
+        }
+        return $note;
     }
 
     public function getNotes(): array
