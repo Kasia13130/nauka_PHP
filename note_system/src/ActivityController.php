@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Note;
 
 require_once("src/Exception/ConfigurationException.php");
-
-use Note\Request;
-use App\Exception\ConfigurationException;
-use App\Exception\NotFoundException;
-
 require_once("PDOConnector.php");
 require_once("View.php");
+
+use Note\Request;
+use Note\Exception\ConfigurationException;
+use Note\Exception\NotFoundException;
 
 class ActivityController
 {

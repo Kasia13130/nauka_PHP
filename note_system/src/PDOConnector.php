@@ -7,9 +7,9 @@ namespace Note;
 require_once("Exception/StorageException.php");
 require_once("Exception/NotFoundException.php");
 
-use App\Exception\ConfigurationException;
-use App\Exception\StorageException;
-use App\Exception\NotFoundException;
+use Note\Exception\ConfigurationException;
+use Note\Exception\StorageException;
+use Note\Exception\NotFoundException;
 use PDO;
 use PDOException;
 use Throwable;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Note;                          
 
-use App\Exception\AppExcepttion;
-use App\Exception\ConfigurationException;
+use Note\Exception\AppExcepttion;
+use Note\Exception\ConfigurationException;
 use Throwable;
 use Note\Request;
 
