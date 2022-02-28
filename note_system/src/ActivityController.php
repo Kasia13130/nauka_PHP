@@ -14,7 +14,7 @@ use Note\Exception\NotFoundException;
 
 class ActivityController
 {
-    private const DEFAULT_ACTION = 'noteList';
+    private const DEFAULT_ACTION = 'listNote';
 
     private static array $config = [];
 
@@ -22,10 +22,8 @@ class ActivityController
     private Request $request;
     private $view;
 
-    // utworzenie metody statycznej
     public static function initConfig(array $config): void
     {
-        // do wlasciwosci statycznych odwolujemy sie przez self
         self::$config = $config;
     }
 
@@ -40,71 +38,68 @@ class ActivityController
         $this->view = new View();
     }
 
-    public function runApp(): void
+    public function createNoteAction()
     {
                 
-        $arrayViewParameters = [];        
-
-        switch ($this->activitiesRecognition())
-        {
-            case 'createNote':
-                $page = 'createNote';     
-                
-                if ($this->request->postData())
-                {   
-                    $noteData = [
-                        'title' => $this->request->postRequestParam('title'),
-                        'description' => $this->request->postRequestParam('description')
-                    ];
-                    $this->pdoConnector->createNote($noteData);
-                    header("Location: ./?before=createdNote");
-                    exit;
-                }
-
-                break;
-        
-            case 'showNote':
-                $page = 'showNote';
-
-                $noteId = (int) $this->request->getRequestParam('id');
-              
-                if (!$noteId)
-                {
-                    header("Location: ./?error=missingNoteId");
-                    exit;
-                }
-
-                try
-                {
-                    $note = $this->pdoConnector->getNote($noteId);
-                }
-                catch (NotFoundException $e)
-                {
-                    header("Location: ./?error=noteNotFound");
-                    exit;
-                }
-                
-                $arrayViewParameters = [
-                    'note' => $note
-                ];
-                break;
-                
-            default:
-
-                $page = 'noteList';
-
-                $arrayViewParameters = [
-                    'notes' => $this->pdoConnector->getNotes(),
-                    'before' => $this->request->getRequestParam('before'),
-                    'error' => $this->request->getRequestParam('error')
-                ];
-                break;
+        if ($this->request->postData())
+        {   
+            $noteData = [
+                'title' => $this->request->postRequestParam('title'),
+                'description' => $this->request->postRequestParam('description')
+            ];
+            $this->pdoConnector->createNote($noteData);
+            header("Location: ./?before=createdNote");
+            exit;
         }
 
-        $this->view->render($page, $arrayViewParameters ?? []);
+        $this->view->render('createNote');
     }
 
-    // rozpozanie czynnosci 
+    public function showNoteAction()
+    {
+
+        $noteId = (int) $this->request->getRequestParam('id');
+      
+        if (!$noteId)
+        {
+            header("Location: ./?error=missingNoteId");
+            exit;
+        }
+
+        try
+        {
+            $note = $this->pdoConnector->getNote($noteId);
+        }
+        catch (NotFoundException $e)
+        {
+            header("Location: ./?error=noteNotFound");
+            exit;
+        }
+        
+        $this->view->render('showNote', ['note' => $note]);
+    }
+
+    public function listNoteAction()
+    {
+        $this->view->render('listNote', [
+            'notes' => $this->pdoConnector->getNotes(),
+            'before' => $this->request->getRequestParam('before'),
+            'error' => $this->request->getRequestParam('error')
+        ]);
+    }
+
+    public function runApp(): void
+    {
+        $activitiesRecognition = $this->activitiesRecognition() . 'Action';
+
+        if (!method_exists($this, $activitiesRecognition))
+        {
+            $activitiesRecognition = self::DEFAULT_ACTION . 'Action';
+        }
+        $this->$activitiesRecognition();
+                
+    }
+
     private function activitiesRecognition(): string
     {
         return $this->request->getRequestParam('action', self::DEFAULT_ACTION);
