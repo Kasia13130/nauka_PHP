@@ -6,6 +6,7 @@ namespace Note;
 
 require_once("src/Exception/ConfigurationException.php");
 
+use Note\Request;
 use App\Exception\ConfigurationException;
 use App\Exception\NotFoundException;
 
@@ -19,7 +20,7 @@ class ActivityController
     private static array $config = [];
 
     private PDOConnector $pdoConnector;
-    private $request;
+    private Request $request;
     private $view;
 
     // utworzenie metody statycznej
@@ -29,7 +30,7 @@ class ActivityController
         self::$config = $config;
     }
 
-    public function __construct(array $request)
+    public function __construct(Request $request)
     {
         if (empty(self::$config['database'])) {
             throw new ConfigurationException('Configuration error');
@@ -49,13 +50,12 @@ class ActivityController
         {
             case 'createNote':
                 $page = 'createNote';     
-                $postData = $this->getRequestPost();
                 
-                if (!empty($postData))
+                if ($this->request->postData())
                 {   
                     $noteData = [
-                        'title' => $postData['title'],
-                        'description' => $postData['description']
+                        'title' => $this->request->postRequestParam('title'),
+                        'description' => $this->request->postRequestParam('description')
                     ];
                     $this->pdoConnector->createNote($noteData);
                     header("Location: ./?before=createdNote");
@@ -67,8 +67,7 @@ class ActivityController
             case 'showNote':
                 $page = 'showNote';
 
-                $noteData = $this->getRequestGet();
-                $noteId = (int) ($noteData['id'] ?? null);
+                $noteId = (int) $this->request->getRequestParam('id');
               
                 if (!$noteId)
                 {
@@ -94,13 +93,11 @@ class ActivityController
             default:
 
                 $page = 'noteList';
-                $getData = $this->getRequestGet();
 
                 $arrayViewParameters = [
                     'notes' => $this->pdoConnector->getNotes(),
-                    'before' => $getData['before'] ?? null,
-                    'error' => $getData['error'] ?? null,
-                    'error' => $getData['error'] ?? null
+                    'before' => $this->request->getRequestParam('before'),
+                    'error' => $this->request->getRequestParam('error')
                 ];
                 break;
         }
@@ -108,21 +105,10 @@ class ActivityController
         $this->view->render($page, $arrayViewParameters ?? []);
     }
 
-    // metoda dostepowa do post
-    private function getRequestPost(): array
-    {
-        return $this->request['post'] ?? [];
-    }
-
-    private function getRequestGet(): array
-    {
-        return $this->request['get'] ?? [];
-    }
-
     // rozpozanie czynnosci 
     private function activitiesRecognition(): string
     {
-        $getData = $this->getRequestGet();
-        return $getData['action'] ?? self::DEFAULT_ACTION;
+        return $this->request->getRequestParam('action', self::DEFAULT_ACTION);
     }
+   
 }

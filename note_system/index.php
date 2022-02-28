@@ -7,17 +7,16 @@ namespace Note;
 use App\Exception\AppExcepttion;
 use App\Exception\ConfigurationException;
 use Throwable;
+use Note\Request;
 
 require_once("src/Utils/debug.php");
 require_once("src/ActivityController.php");
 require_once("src/Exception/AppException.php");
+require_once("src/Request.php");
 
 $config = require_once("config/config.php");
 
-$request = [
-    'get' => $_GET,
-    'post' => $_POST
-];
+$request = new Request($_GET, $_POST);
 
 try {
 
@@ -35,5 +34,5 @@ ActivityController::initConfig($config);
     echo '<h3>' . $e->getMessage() . '</h3>';
 } catch (Throwable $e) {    
     echo '<h3>Błąd w aplikacji</h3>';
-    debuging($e->getMessage());
+    debuging($e);
 }    
