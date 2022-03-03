@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Note;
+namespace Note\Controller;
 
-require_once("src/Exception/ConfigurationException.php");
-require_once("PDOConnector.php");
-require_once("View.php");
+use Note\Request;
+use Note\PDOConnector;
+use Note\View;
+use Note\Exception\ConfigurationException;
 
 abstract class AbstractActivityController
 {
