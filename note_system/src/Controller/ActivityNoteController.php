@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Note;
-
-require_once("AbstractActivityController.php");
+namespace Note\Controller;
 
 use Note\Exception\NotFoundException;
 
