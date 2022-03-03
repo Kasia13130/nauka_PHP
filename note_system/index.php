@@ -10,7 +10,7 @@ use Throwable;
 use Note\Request;
 
 require_once("src/Utils/debug.php");
-require_once("src/ActivityController.php");
+require_once("src/ActivityNoteController.php");
 require_once("src/Exception/AppException.php");
 require_once("src/Request.php");
 
@@ -21,10 +21,10 @@ $request = new Request($_GET, $_POST);
 try {
 
 // wywolanie metody konfiguracyjnej
-ActivityController::initConfig($config);
+AbstractActivityController::initConfig($config);
 
 // szybsze wywolanie metody runApp()
-(new ActivityController($request))->runApp();
+(new ActivityNoteController($request))->runApp();
 
 } catch (ConfigurationException $e) {
     echo '<h3>Błąd w aplikacji</h3>';
