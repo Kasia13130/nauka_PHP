@@ -2,10 +2,10 @@
     <?php $note = $viewParameters['note'] ?? null; ?>
     <?php if ($note) : ?>
         <ul>
-            <li>Nr notatki: <?php echo htmlentities($note['id']) ?></li>
-            <li>Tytuł: <?php echo htmlentities($note['title']) ?></li>
-            <?php echo htmlentities($note['description']) ?>
-            <li>Data utworzenia: <?php echo htmlentities($note['create_date']) ?></li>
+            <li>Nr notatki: <?php echo $note['id'] ?></li>
+            <li>Tytuł: <?php echo $note['title'] ?></li>
+            <?php echo $note['description'] ?>
+            <li>Data utworzenia: <?php echo $note['create_date'] ?></li>
         </ul>
 
     <?php else : ?>

@@ -40,11 +40,11 @@
                 <tbody>
                     <?php foreach ($viewParameters['notes'] ?? [] as $note) : ?>
                         <tr>
-                            <td><?php echo (int) $note['id']; ?></td>
-                            <td><?php echo htmlentities($note['title']); ?></td>
-                            <td><?php echo htmlentities($note['create_date']); ?></td>
+                            <td><?php echo $note['id']; ?></td>
+                            <td><?php echo $note['title']; ?></td>
+                            <td><?php echo $note['create_date']; ?></td>
                             <td>
-                                <a href="./?action=showNote&id=<?php echo (int) $note['id']; ?>">
+                                <a href="./?action=showNote&id=<?php echo $note['id']; ?>">
                                 <button>Wyświetl notatkę</button>
                                 </a>
                             </td>
