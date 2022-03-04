@@ -7,7 +7,9 @@
             <?php echo $note['description'] ?>
             <li>Data utworzenia: <?php echo $note['create_date'] ?></li>
         </ul>
-
+        <a href="./?action=editNote&id=<?php echo $note['id'] ?>" >
+            <button>Edytuj notatkę</button>
+        </a>
     <?php else : ?>
         <div>Brak wskazanej notatki do wyświetlenia</div>
     <?php endif; ?>

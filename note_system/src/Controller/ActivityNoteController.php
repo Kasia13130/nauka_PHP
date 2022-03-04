@@ -18,7 +18,7 @@ class ActivityNoteController extends AbstractActivityController
                 'description' => $this->request->postRequestParam('description')
             ];
             $this->pdoConnector->createNote($noteData);
-            header("Location: ./?before=createdNote");
+            $this->pageRedirect('./', ['before' => 'createdNote']);
             exit;
         }
 
@@ -32,7 +32,7 @@ class ActivityNoteController extends AbstractActivityController
       
         if (!$noteId)
         {
-            header("Location: ./?error=missingNoteId");
+            $this->pageRedirect('./', ['error' => 'missingNoteId']);
             exit;
         }
 
@@ -42,7 +42,7 @@ class ActivityNoteController extends AbstractActivityController
         }
         catch (NotFoundException $e)
         {
-            header("Location: ./?error=noteNotFound");
+            $this->pageRedirect('./', ['error' => 'noteNotFound']);
             exit;
         }
         
@@ -56,5 +56,15 @@ class ActivityNoteController extends AbstractActivityController
             'before' => $this->request->getRequestParam('before'),
             'error' => $this->request->getRequestParam('error')
         ]);
-    }    
+    }
+    
+    public function editNoteAction()
+    {
+        $idNote = (int) $this->request->getRequestParam('id');
+        if (!$idNote)
+        {
+            $this->pageRedirect('./', ['error' => 'missingNoteId']);
+        }
+        $this->view->render('editNote');
+    }
 }

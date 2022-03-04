@@ -47,8 +47,29 @@ abstract class AbstractActivityController
                 
     }
 
+    protected function pageRedirect(string $toPage, array $viewParameters): void
+    {
+        $locationPage = $toPage;
+
+        if (count($viewParameters))
+        {
+            $queryParameters = [];
+
+            foreach($viewParameters as $key => $viewParameter)
+            {
+                $queryParameters[] = urlencode($key) . '=' . urlencode($viewParameter);
+            }
+
+            $queryParameters = implode('&', $queryParameters);
+            $locationPage .= '?' . $queryParameters;
+        }
+
+        header("Location: $locationPage");
+        exit;
+    }
+
     private function activitiesRecognition(): string
     {
         return $this->request->getRequestParam('action', self::DEFAULT_ACTION);
-    }
+    }    
 }
