@@ -22,6 +22,9 @@
                     case 'editedNote':
                         echo 'Notatka została zaktualizowana';
                         break;
+                    case 'deletedNote':
+                        echo 'Notatka została usunięta';
+                        break;
                 }
             } ?>
         </div>
@@ -48,7 +51,10 @@
                             <td><?php echo $note['create_date']; ?></td>
                             <td>
                                 <a href="./?action=showNote&id=<?php echo $note['id']; ?>">
-                                <button>Wyświetl notatkę</button>
+                                    <button>Wyświetl notatkę</button>
+                                </a>
+                                <a href="./?action=deleteNote&id=<?php echo $note['id']; ?>">
+                                    <button>Usuń notatkę</button>
                                 </a>
                             </td>
                         </tr>

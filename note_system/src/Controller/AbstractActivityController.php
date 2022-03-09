@@ -35,7 +35,7 @@ abstract class AbstractActivityController
         $this->view = new View();
     }
 
-    public function runApp(): void
+    final public function runApp(): void
     {
         $activitiesRecognition = $this->activitiesRecognition() . 'Action';
 
@@ -47,7 +47,7 @@ abstract class AbstractActivityController
                 
     }
 
-    protected function pageRedirect(string $toPage, array $viewParameters): void
+    final protected function pageRedirect(string $toPage, array $viewParameters): void
     {
         $locationPage = $toPage;
 

@@ -102,12 +102,24 @@ class PDOConnector
         }
     }
 
+    public function deleteNote(int $idNote): void
+    {
+        try 
+        {
+            $sqlQuery = "DELETE FROM note_system.notes WHERE id = $idNote LIMIT 1";
+            $this->connect->exec($sqlQuery);
+        }
+        catch (Throwable $e)
+        {
+            throw new StorageException('Notatka nie nostała usunięta', 400, $e);
+        }
+    }
+
     private function createDatabaseConnection(array $config): void
     {
         $dsn = "mysql:database={$config['database']};host={$config['host']}";
         
         $this->connect = new PDO($dsn, $config['user'], $config['password'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)); 
-        // debuging($connect);
     }
 
     private function configValidation(array $config): void

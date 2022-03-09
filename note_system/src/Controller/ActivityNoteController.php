@@ -8,7 +8,7 @@ use Note\Exception\NotFoundException;
 
 class ActivityNoteController extends AbstractActivityController
 {
-    public function createNoteAction()
+    public function createNoteAction(): void
     {
 
         if ($this->request->postData()) {
@@ -24,27 +24,12 @@ class ActivityNoteController extends AbstractActivityController
         $this->view->render('createNote');
     }
 
-    public function showNoteAction()
+    public function showNoteAction(): void
     {
-
-        $noteId = (int) $this->request->getRequestParam('id');
-
-        if (!$noteId) {
-            $this->pageRedirect('./', ['error' => 'missingNoteId']);
-            exit;
-        }
-
-        try {
-            $note = $this->pdoConnector->getNote($noteId);
-        } catch (NotFoundException $e) {
-            $this->pageRedirect('./', ['error' => 'noteNotFound']);
-            exit;
-        }
-
-        $this->view->render('showNote', ['note' => $note]);
+        $this->view->render('showNote', ['note' => $this->getNoteData()]);
     }
 
-    public function listNoteAction()
+    public function listNoteAction(): void
     {
         $this->view->render('listNote', [
             'notes' => $this->pdoConnector->getNotes(),
@@ -53,7 +38,7 @@ class ActivityNoteController extends AbstractActivityController
         ]);
     }
 
-    public function editNoteAction()
+    public function editNoteAction(): void
     {
         if ($this->request->isPostDataServer()) {
 
@@ -64,10 +49,27 @@ class ActivityNoteController extends AbstractActivityController
                 'description' => $this->request->postRequestParam('description')
             ];
             $this->pdoConnector->editNote($idNote, $noteData);
-            $this->pageRedirect('./', ['before' => 'edited']);
-
+            $this->pageRedirect('./', ['before' => 'editedNote']);
         }
 
+        $this->view->render('editNote', ['note' => $this->getNoteData()]);
+    }
+
+    public function deleteNoteAction(): void
+    {   
+        if ($this->request->isPostDataServer())
+        {
+            $idNote = (int) $this->request->postRequestParam('id');
+            $this->pdoConnector->deleteNote($idNote);
+
+            $this->pageRedirect('./', ['before' => 'deletedNote']);
+        }
+
+        $this->view->render('deleteNote', ['note' => $this->getNoteData()]);
+    }
+
+    private function getNoteData(): array
+    {
         $idNote = (int) $this->request->getRequestParam('id');
 
         if (!$idNote) {
@@ -83,7 +85,6 @@ class ActivityNoteController extends AbstractActivityController
             $this->pageRedirect('./', ['error' => 'noteNotFound']);
         }
 
-        $this->view->render('editNote', ['note' => $note]);
-
+        return $note;
     }
 }
