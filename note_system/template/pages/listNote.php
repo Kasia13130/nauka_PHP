@@ -19,6 +19,9 @@
                     case 'createdNote':
                         echo 'Utworzono notatkę';
                         break;
+                    case 'editedNote':
+                        echo 'Notatka została zaktualizowana';
+                        break;
                 }
             } ?>
         </div>

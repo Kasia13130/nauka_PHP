@@ -85,6 +85,23 @@ class PDOConnector
         
     }
 
+    public function editNote(int $idNote, array $editedDataNote): void
+    {
+        try
+        {
+            $title = $this->connect->quote($editedDataNote['title']);
+            $description = $this->connect->quote($editedDataNote['description']);
+
+            $sqlQuery = "UPDATE note_system.notes SET title = $title, description = $description WHERE id = $idNote";
+            
+            $this->connect->exec($sqlQuery);
+        }
+        catch (Throwable $e)
+        {
+            throw new StorageException('Edytowanie notatki nie powiodło się', 400, $e);
+        }
+    }
+
     private function createDatabaseConnection(array $config): void
     {
         $dsn = "mysql:database={$config['database']};host={$config['host']}";

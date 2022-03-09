@@ -10,9 +10,8 @@ class ActivityNoteController extends AbstractActivityController
 {
     public function createNoteAction()
     {
-                
-        if ($this->request->postData())
-        {   
+
+        if ($this->request->postData()) {
             $noteData = [
                 'title' => $this->request->postRequestParam('title'),
                 'description' => $this->request->postRequestParam('description')
@@ -29,23 +28,19 @@ class ActivityNoteController extends AbstractActivityController
     {
 
         $noteId = (int) $this->request->getRequestParam('id');
-      
-        if (!$noteId)
-        {
+
+        if (!$noteId) {
             $this->pageRedirect('./', ['error' => 'missingNoteId']);
             exit;
         }
 
-        try
-        {
+        try {
             $note = $this->pdoConnector->getNote($noteId);
-        }
-        catch (NotFoundException $e)
-        {
+        } catch (NotFoundException $e) {
             $this->pageRedirect('./', ['error' => 'noteNotFound']);
             exit;
         }
-        
+
         $this->view->render('showNote', ['note' => $note]);
     }
 
@@ -57,14 +52,38 @@ class ActivityNoteController extends AbstractActivityController
             'error' => $this->request->getRequestParam('error')
         ]);
     }
-    
+
     public function editNoteAction()
     {
-        $idNote = (int) $this->request->getRequestParam('id');
-        if (!$idNote)
-        {
-            $this->pageRedirect('./', ['error' => 'missingNoteId']);
+        if ($this->request->isPostDataServer()) {
+
+            $idNote = (int) $this->request->postRequestParam('id');
+
+            $noteData = [
+                'title' => $this->request->postRequestParam('title'),
+                'description' => $this->request->postRequestParam('description')
+            ];
+            $this->pdoConnector->editNote($idNote, $noteData);
+            $this->pageRedirect('./', ['before' => 'edited']);
+
         }
-        $this->view->render('editNote');
+
+        $idNote = (int) $this->request->getRequestParam('id');
+
+        if (!$idNote) {
+
+            $this->pageRedirect('./', ['error' => 'missingNoteId']);
+        }            
+
+        try {
+            $note = $this->pdoConnector->getNote($idNote);
+        } 
+        catch (NotFoundException $e) 
+        {
+            $this->pageRedirect('./', ['error' => 'noteNotFound']);
+        }
+
+        $this->view->render('editNote', ['note' => $note]);
+
     }
 }

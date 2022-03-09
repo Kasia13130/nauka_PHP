@@ -15,13 +15,11 @@ use Note\Controller\ActivityNoteController;
 use Note\Exception\AppExcepttion;
 use Note\Exception\ConfigurationException;
 
-$request = new Request($_GET, $_POST);
-
 require_once("src/Utils/debug.php");
 
 $config = require_once("config/config.php");
 
-$request = new Request($_GET, $_POST);
+$request = new Request($_GET, $_POST, $_SERVER);
 
 try {
 
