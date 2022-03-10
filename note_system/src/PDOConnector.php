@@ -69,11 +69,21 @@ class PDOConnector
         return $note;
     }
 
-    public function getNotes(): array
+    public function getNotes(string $bySort, string $orderSort): array
     {
         try 
         {
-            $sqlQuery = "SELECT id, title, create_date FROM note_system.notes";
+            if (!in_array($bySort, ['title', 'create_date']))
+            {
+                $bySort = 'title';
+            }
+
+            if (!in_array($orderSort, ['asc', 'desc']))
+            {
+                $orderSort = 'desc';
+            }
+
+            $sqlQuery = "SELECT id, title, create_date FROM note_system.notes ORDER BY $bySort $orderSort";
 
             $result = $this->connect->query($sqlQuery);
             return $result->fetchAll(PDO::FETCH_ASSOC);           

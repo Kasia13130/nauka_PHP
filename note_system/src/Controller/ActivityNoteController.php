@@ -31,8 +31,12 @@ class ActivityNoteController extends AbstractActivityController
 
     public function listNoteAction(): void
     {
+        $bySort = $this->request->getRequestParam('sortby', 'title');
+        $orderSort = $this->request->getRequestParam('sortorder', 'desc');
+
         $this->view->render('listNote', [
-            'notes' => $this->pdoConnector->getNotes(),
+            'sort' => ['by' => $bySort, 'order' => $orderSort],
+            'notes' => $this->pdoConnector->getNotes($bySort, $orderSort),
             'before' => $this->request->getRequestParam('before'),
             'error' => $this->request->getRequestParam('error')
         ]);

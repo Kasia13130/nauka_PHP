@@ -1,6 +1,6 @@
 <div class="listNotes">
     <section>
-    <div class="noteMessage">
+        <div class="noteMessage">
             <?php if (!empty($viewParameters['error'])) {
                 switch ($viewParameters['error']) {
                     case 'missingNoteId':
@@ -27,6 +27,27 @@
                         break;
                 }
             } ?>
+        </div>
+
+        <?php  
+            $sortType = $viewParameters['sort'] ?? [];
+            $bySort = $sortType['by'] ?? 'title';
+            $orderSort = $sortType['order'] ?? 'create_date';
+        ?>
+
+        <div>
+            <form class="settings-form" action="./" method="GET">
+                <div>
+                    <div>Sortuj według: </div>
+                    <label><input name="sortby" type="radio" value="title" <?php echo $bySort === 'title' ? 'checked' : '' ?> />Tytułu </label>
+                    <label><input name="sortby" type="radio" value="create_date" <?php echo $bySort === 'create_date' ? 'checked' : '' ?> />Daty utworzenia </label>
+
+                    <div>Typ sortowania</div>
+                    <label><input name="sortorder" type="radio" value="asc" <?php echo $orderSort === 'asc' ? 'checked' : '' ?> />Rosnąco </label>
+                    <label><input name="sortorder" type="radio" value="desc" <?php echo $orderSort === 'desc' ? 'checked' : '' ?> />Malejąco </label>
+                </div>
+                <input type="submit" value="Wybierz" />
+            </form>
         </div>
 
         <div class="tbl-header">
