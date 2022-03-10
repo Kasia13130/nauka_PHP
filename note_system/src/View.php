@@ -14,24 +14,25 @@ class View
 
     private function escapeHelper(array $viewParameters): array
     {
-        $clearViewParameters = [];
-        
+        $clearViewParameters = [];        
 
         foreach ($viewParameters as $key => $viewParameter)
         {
-            if (is_array($viewParameter))
+            switch (true)
             {
-                $clearViewParameters[$key] = $this->escapeHelper($viewParameter);
-            }
-            else if ($viewParameter)
-            {
-                $clearViewParameters[$key] = htmlentities($viewParameter);
-            }
-            else
-            {
-                $clearViewParameters[$key] = $viewParameter;
-            }
-            
+                case is_array($viewParameter):
+                    $clearViewParameters[$key] = $this->escapeHelper($viewParameter);
+                    break;
+                case is_int($viewParameter):
+                    $clearViewParameters[$key] = $viewParameter;
+                    break;
+                case $viewParameter:
+                    $clearViewParameters[$key] = htmlentities($viewParameter);
+                    break;
+                default:
+                    $clearViewParameters[$key] = $viewParameter;
+                    break;
+            }            
         }
 
         return $clearViewParameters;

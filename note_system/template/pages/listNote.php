@@ -33,6 +33,10 @@
             $sortType = $viewParameters['sort'] ?? [];
             $bySort = $sortType['by'] ?? 'title';
             $orderSort = $sortType['order'] ?? 'create_date';
+
+            $page = $viewParameters['page'] ?? [];
+            $pageSize = $page['pageSize'] ?? 10;
+            $pageNumber = $page['pageNumber'] ?? 1;
         ?>
 
         <div>
@@ -45,6 +49,13 @@
                     <div>Typ sortowania</div>
                     <label><input name="sortorder" type="radio" value="asc" <?php echo $orderSort === 'asc' ? 'checked' : '' ?> />Rosnąco </label>
                     <label><input name="sortorder" type="radio" value="desc" <?php echo $orderSort === 'desc' ? 'checked' : '' ?> />Malejąco </label>
+                </div>
+                <div>
+                    <div>Rozmiar notatki</div>
+                    <label><input name="pageSize" type="radio" value="1" <?php echo $pageSize === 1 ? 'checked' : '' ?> /> 1  </label>
+                    <label><input name="pageSize" type="radio" value="5" <?php echo $pageSize === 5 ? 'checked' : '' ?> /> 5  </label>
+                    <label><input name="pageSize" type="radio" value="10" <?php echo $pageSize === 10 ? 'checked' : '' ?> /> 10  </label>
+                    <label><input name="pageSize" type="radio" value="15" <?php echo $pageSize === 15 ? 'checked' : '' ?> />15  </label>
                 </div>
                 <input type="submit" value="Wybierz" />
             </form>

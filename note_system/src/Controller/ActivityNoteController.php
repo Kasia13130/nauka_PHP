@@ -8,6 +8,8 @@ use Note\Exception\NotFoundException;
 
 class ActivityNoteController extends AbstractActivityController
 {
+    private const PAGE_SIZE = 15;
+
     public function createNoteAction(): void
     {
 
@@ -30,13 +32,23 @@ class ActivityNoteController extends AbstractActivityController
     }
 
     public function listNoteAction(): void
-    {
+    {        
+        $pageNumber = (int) $this->request->getRequestParam('pageNumber', 1);
+        $pageSize = (int) $this->request->getRequestParam('pageSize', self::PAGE_SIZE);
         $bySort = $this->request->getRequestParam('sortby', 'title');
         $orderSort = $this->request->getRequestParam('sortorder', 'desc');
 
+        if (!in_array($pageSize, [1, 5, 10, 15]))
+        {
+            $pageSize = self::PAGE_SIZE;
+        }
+
+        $allNotes = $this->pdoConnector->getNotes($pageNumber, $pageSize, $bySort, $orderSort);
+
         $this->view->render('listNote', [
+            'page' => ['pageNumber' => $pageNumber, 'pageSize' => $pageSize],
             'sort' => ['by' => $bySort, 'order' => $orderSort],
-            'notes' => $this->pdoConnector->getNotes($bySort, $orderSort),
+            'notes' => $allNotes,
             'before' => $this->request->getRequestParam('before'),
             'error' => $this->request->getRequestParam('error')
         ]);

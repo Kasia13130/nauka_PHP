@@ -69,10 +69,13 @@ class PDOConnector
         return $note;
     }
 
-    public function getNotes(string $bySort, string $orderSort): array
+    public function getNotes(int $pageNumber, int $pageSize, string $bySort, string $orderSort): array
     {
         try 
         {
+            $pageLimit = $pageSize;
+            $pageOffset = ($pageNumber - 1) * $pageSize;
+
             if (!in_array($bySort, ['title', 'create_date']))
             {
                 $bySort = 'title';
@@ -83,7 +86,7 @@ class PDOConnector
                 $orderSort = 'desc';
             }
 
-            $sqlQuery = "SELECT id, title, create_date FROM note_system.notes ORDER BY $bySort $orderSort";
+            $sqlQuery = "SELECT id, title, create_date FROM note_system.notes ORDER BY $bySort $orderSort LIMIT $pageOffset, $pageLimit";
 
             $result = $this->connect->query($sqlQuery);
             return $result->fetchAll(PDO::FETCH_ASSOC);           
