@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Note\Controller;
 
-use Note\Exception\NotFoundException;
-
 class ActivityNoteController extends AbstractActivityController
 {
     private const PAGE_SIZE = 15;
@@ -106,16 +104,8 @@ class ActivityNoteController extends AbstractActivityController
         if (!$idNote) {
 
             $this->pageRedirect('./', ['error' => 'missingNoteId']);
-        }            
-
-        try {
-            $note = $this->pdoConnector->getNote($idNote);
         } 
-        catch (NotFoundException $e) 
-        {
-            $this->pageRedirect('./', ['error' => 'noteNotFound']);
-        }
 
-        return $note;
+        return $this->pdoConnector->getNote($idNote);       
     }
 }

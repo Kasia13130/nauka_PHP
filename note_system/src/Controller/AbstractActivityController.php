@@ -8,6 +8,7 @@ use Note\Request;
 use Note\PDOConnector;
 use Note\View;
 use Note\Exception\ConfigurationException;
+use Note\Exception\StorageException;
 
 abstract class AbstractActivityController
 {
@@ -37,14 +38,25 @@ abstract class AbstractActivityController
 
     final public function runApp(): void
     {
-        $activitiesRecognition = $this->activitiesRecognition() . 'Action';
+        try {
+            $activitiesRecognition = $this->activitiesRecognition() . 'Action';
 
-        if (!method_exists($this, $activitiesRecognition))
+            if (!method_exists($this, $activitiesRecognition))
+            {
+                $activitiesRecognition = self::DEFAULT_ACTION . 'Action';
+            }
+            $this->$activitiesRecognition();
+            }
+
+        catch (StorageException $e)
         {
-            $activitiesRecognition = self::DEFAULT_ACTION . 'Action';
+            $this->view->render('errorNote', ['message' => $e->getMessage()]
+            );
         }
-        $this->$activitiesRecognition();
-                
+        catch (NotFoundException $e) 
+        {
+            $this->pageRedirect('./', ['error' => 'noteNotFound']);
+        }
     }
 
     final protected function pageRedirect(string $toPage, array $viewParameters): void
