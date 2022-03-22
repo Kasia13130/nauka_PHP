@@ -98,6 +98,28 @@ class PDOConnector
         
     }
 
+    public function getCountAllNotes(): int
+    {
+        try 
+        {
+            $sqlQuery = "SELECT count(*) AS count FROM note_system.notes";
+
+            $result = $this->connect->query($sqlQuery);
+            $result = $result->fetch(PDO::FETCH_ASSOC);      
+
+            if ($result === false)
+            {
+                throw new StorageException('Błąd przy pobieraniu całkowitej ilości notatek');
+            }   
+            return (int) $result['count'];  
+        }
+        catch (Throwable $e)
+        {
+            throw new StorageException("Nie pobrano całkowitej ilości notatek", 400, $e);
+        }
+        
+    }
+
     public function editNote(int $idNote, array $editedDataNote): void
     {
         try

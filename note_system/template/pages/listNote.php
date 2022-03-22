@@ -29,14 +29,16 @@
             } ?>
         </div>
 
-        <?php  
-            $sortType = $viewParameters['sort'] ?? [];
-            $bySort = $sortType['by'] ?? 'title';
-            $orderSort = $sortType['order'] ?? 'create_date';
+        <?php
+        // debuging($viewParameters);
+        $sortType = $viewParameters['sort'] ?? [];
+        $bySort = $sortType['by'] ?? 'title';
+        $orderSort = $sortType['order'] ?? 'create_date';
 
-            $page = $viewParameters['page'] ?? [];
-            $pageSize = $page['pageSize'] ?? 10;
-            $pageNumber = $page['pageNumber'] ?? 1;
+        $page = $viewParameters['page'] ?? [];
+        $pageSize = $page['pageSize'] ?? 10;
+        $currentNumberPage = $page['pageNumber'] ?? 1;
+        $pages = $page['numberOfPages'] ?? 1;
         ?>
 
         <div>
@@ -52,10 +54,10 @@
                 </div>
                 <div>
                     <div>Rozmiar notatki</div>
-                    <label><input name="pageSize" type="radio" value="1" <?php echo $pageSize === 1 ? 'checked' : '' ?> /> 1  </label>
-                    <label><input name="pageSize" type="radio" value="5" <?php echo $pageSize === 5 ? 'checked' : '' ?> /> 5  </label>
-                    <label><input name="pageSize" type="radio" value="10" <?php echo $pageSize === 10 ? 'checked' : '' ?> /> 10  </label>
-                    <label><input name="pageSize" type="radio" value="15" <?php echo $pageSize === 15 ? 'checked' : '' ?> />15  </label>
+                    <label><input name="pageSize" type="radio" value="1" <?php echo $pageSize === 1 ? 'checked' : '' ?> /> 1 </label>
+                    <label><input name="pageSize" type="radio" value="5" <?php echo $pageSize === 5 ? 'checked' : '' ?> /> 5 </label>
+                    <label><input name="pageSize" type="radio" value="10" <?php echo $pageSize === 10 ? 'checked' : '' ?> /> 10 </label>
+                    <label><input name="pageSize" type="radio" value="15" <?php echo $pageSize === 15 ? 'checked' : '' ?> />15 </label>
                 </div>
                 <input type="submit" value="Wybierz" />
             </form>
@@ -93,7 +95,35 @@
                     <?php endforeach; ?>
                 </tbody>
             </table>
-
         </div>
+
+        <?php 
+            $paginationPageUrl = "&pageSize=$pageSize?sortby=$bySort&sortorder=$orderSort";
+        ?>
+
+        <ul class="pagination">
+            <?php if ($currentNumberPage !== 1): ?>
+            <li>
+                <a href="./?page=<?php echo $currentNumberPage - 1 . $paginationPageUrl ?>">
+                    <button><<</button>
+                </a>
+            </li>
+            <?php endif; ?>
+            <?php for ($i = 1; $i <= $pages; $i++) : ?>
+                <li>
+                    <a href="./?page=<?php echo $i . $paginationPageUrl ?>">
+                        <button><?php echo $i ?></button>
+                    </a>
+                </li>
+            <?php endfor; ?>
+            <?php if ($currentNumberPage < $pages): ?>
+            <li>
+                <a href="./?page=<?php echo $currentNumberPage + 1 . $paginationPageUrl ?>">
+                    <button>>></button>
+                </a>
+            </li>
+            <?php endif; ?>
+        </ul>
+
     </section>
 </div>

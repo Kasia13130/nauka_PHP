@@ -33,7 +33,7 @@ class ActivityNoteController extends AbstractActivityController
 
     public function listNoteAction(): void
     {        
-        $pageNumber = (int) $this->request->getRequestParam('pageNumber', 1);
+        $pageNumber = (int) $this->request->getRequestParam('page', 1);
         $pageSize = (int) $this->request->getRequestParam('pageSize', self::PAGE_SIZE);
         $bySort = $this->request->getRequestParam('sortby', 'title');
         $orderSort = $this->request->getRequestParam('sortorder', 'desc');
@@ -43,12 +43,17 @@ class ActivityNoteController extends AbstractActivityController
             $pageSize = self::PAGE_SIZE;
         }
 
-        $allNotes = $this->pdoConnector->getNotes($pageNumber, $pageSize, $bySort, $orderSort);
+        $notesToDisplay = $this->pdoConnector->getNotes($pageNumber, $pageSize, $bySort, $orderSort);
+        $allNotesCount = $this->pdoConnector->getCountAllNotes();
 
         $this->view->render('listNote', [
-            'page' => ['pageNumber' => $pageNumber, 'pageSize' => $pageSize],
+            'page' => [
+                'pageNumber' => $pageNumber, 
+                'pageSize' => $pageSize, 
+                'numberOfPages' => (int) ceil($allNotesCount / $pageSize)
+            ],
             'sort' => ['by' => $bySort, 'order' => $orderSort],
-            'notes' => $allNotes,
+            'notes' => $notesToDisplay,
             'before' => $this->request->getRequestParam('before'),
             'error' => $this->request->getRequestParam('error')
         ]);
