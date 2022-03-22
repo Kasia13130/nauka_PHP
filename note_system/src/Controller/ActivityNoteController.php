@@ -33,6 +33,7 @@ class ActivityNoteController extends AbstractActivityController
 
     public function listNoteAction(): void
     {        
+        $searchPhrase = $this->request->getRequestParam('searchPhrase');
         $pageNumber = (int) $this->request->getRequestParam('page', 1);
         $pageSize = (int) $this->request->getRequestParam('pageSize', self::PAGE_SIZE);
         $bySort = $this->request->getRequestParam('sortby', 'title');
@@ -43,15 +44,24 @@ class ActivityNoteController extends AbstractActivityController
             $pageSize = self::PAGE_SIZE;
         }
 
-        $notesToDisplay = $this->pdoConnector->getNotes($pageNumber, $pageSize, $bySort, $orderSort);
-        $allNotesCount = $this->pdoConnector->getCountAllNotes();
-
+        if ($searchPhrase)
+        {
+            $notesToDisplay = $this->pdoConnector->searchNotes($searchPhrase, $pageNumber, $pageSize, $bySort, $orderSort);
+            $allNotesCount = $this->pdoConnector->getSearchNotesCount($searchPhrase);
+        }
+        else
+        {
+            $notesToDisplay = $this->pdoConnector->getNotes($pageNumber, $pageSize, $bySort, $orderSort);
+            $allNotesCount = $this->pdoConnector->getCountAllNotes();
+        }  
+        
         $this->view->render('listNote', [
             'page' => [
                 'pageNumber' => $pageNumber, 
                 'pageSize' => $pageSize, 
                 'numberOfPages' => (int) ceil($allNotesCount / $pageSize)
             ],
+            'searchPhrase' => $searchPhrase,
             'sort' => ['by' => $bySort, 'order' => $orderSort],
             'notes' => $notesToDisplay,
             'before' => $this->request->getRequestParam('before'),

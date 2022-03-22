@@ -30,7 +30,7 @@
         </div>
 
         <?php
-        // debuging($viewParameters);
+
         $sortType = $viewParameters['sort'] ?? [];
         $bySort = $sortType['by'] ?? 'title';
         $orderSort = $sortType['order'] ?? 'create_date';
@@ -39,10 +39,16 @@
         $pageSize = $page['pageSize'] ?? 10;
         $currentNumberPage = $page['pageNumber'] ?? 1;
         $pages = $page['numberOfPages'] ?? 1;
+
+        $searchPhrase = $viewParameters['searchPhrase'] ?? null;
+
         ?>
 
         <div>
             <form class="settings-form" action="./" method="GET">
+                <div>
+                    <label>Wyszukaj notatkę: <input type="text" name="searchPhrase" value="<?php echo $searchPhrase; ?>"/></label>
+                </div>
                 <div>
                     <div>Sortuj według: </div>
                     <label><input name="sortby" type="radio" value="title" <?php echo $bySort === 'title' ? 'checked' : '' ?> />Tytułu </label>
@@ -98,7 +104,7 @@
         </div>
 
         <?php 
-            $paginationPageUrl = "&pageSize=$pageSize?sortby=$bySort&sortorder=$orderSort";
+            $paginationPageUrl = "&searchPhrase=$searchPhrase&pageSize=$pageSize?sortby=$bySort&sortorder=$orderSort";
         ?>
 
         <ul class="pagination">

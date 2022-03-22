@@ -47,6 +47,67 @@ class PDOConnector
         }        
     }
 
+    public function searchNotes(string $searchPhrase, int $pageNumber, int $pageSize, string $bySort, string $orderSort): array
+    {
+        try 
+        {
+            $pageLimit = $pageSize;
+            $pageOffset = ($pageNumber - 1) * $pageSize;
+
+            if (!in_array($bySort, ['title', 'create_date']))
+            {
+                $bySort = 'title';
+            }
+
+            if (!in_array($orderSort, ['asc', 'desc']))
+            {
+                $orderSort = 'desc';
+            }
+
+            $searchPhrase = $this->connect->quote('%' . $searchPhrase . '%', PDO::PARAM_STR);
+
+            $sqlQuery = "SELECT id, title, create_date 
+                         FROM note_system.notes 
+                         WHERE title LIKE ($searchPhrase)
+                         ORDER BY $bySort $orderSort 
+                         LIMIT $pageOffset, $pageLimit";
+
+            $result = $this->connect->query($sqlQuery);
+            return $result->fetchAll(PDO::FETCH_ASSOC);           
+        }
+        catch (Throwable $e)
+        {
+            throw new StorageException("Nie udało się wyszukać notatkek", 400, $e);
+        }
+    }
+
+    public function getSearchNotesCount(string $searchPhrase): int
+    {
+        try 
+        {
+            $searchPhrase = $this->connect->quote('%' . $searchPhrase . '%', PDO::PARAM_STR);
+
+            $sqlQuery = "SELECT count(*) 
+                         AS count 
+                         FROM note_system.notes 
+                         WHERE title 
+                         LIKE ($searchPhrase)";
+
+            $result = $this->connect->query($sqlQuery);
+            $result = $result->fetch(PDO::FETCH_ASSOC);      
+
+            if ($result === false)
+            {
+                throw new StorageException('Błąd przy wyszukaniu całkowitej ilości notatek');
+            }   
+            return (int) $result['count'];  
+        }
+        catch (Throwable $e)
+        {
+            throw new StorageException("Nie wyszukano całkowitej ilości notatek", 400, $e);
+        }
+    }
+
     public function getNote(int $id): array
     {
         try
