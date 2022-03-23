@@ -16,7 +16,7 @@ class ActivityNoteController extends AbstractActivityController
                 'title' => $this->request->postRequestParam('title'),
                 'description' => $this->request->postRequestParam('description')
             ];
-            $this->pdoConnector->createNote($noteData);
+            $this->pdoNoteModel->create($noteData);
             $this->pageRedirect('./', ['before' => 'createdNote']);
             exit;
         }
@@ -44,13 +44,13 @@ class ActivityNoteController extends AbstractActivityController
 
         if ($searchPhrase)
         {
-            $notesToDisplay = $this->pdoConnector->searchNotes($searchPhrase, $pageNumber, $pageSize, $bySort, $orderSort);
-            $allNotesCount = $this->pdoConnector->getSearchNotesCount($searchPhrase);
+            $notesToDisplay = $this->pdoNoteModel->search($searchPhrase, $pageNumber, $pageSize, $bySort, $orderSort);
+            $allNotesCount = $this->pdoNoteModel->searchCount($searchPhrase);
         }
         else
         {
-            $notesToDisplay = $this->pdoConnector->getNotes($pageNumber, $pageSize, $bySort, $orderSort);
-            $allNotesCount = $this->pdoConnector->getCountAllNotes();
+            $notesToDisplay = $this->pdoNoteModel->list($pageNumber, $pageSize, $bySort, $orderSort);
+            $allNotesCount = $this->pdoNoteModel->count();
         }  
         
         $this->view->render('listNote', [
@@ -77,7 +77,7 @@ class ActivityNoteController extends AbstractActivityController
                 'title' => $this->request->postRequestParam('title'),
                 'description' => $this->request->postRequestParam('description')
             ];
-            $this->pdoConnector->editNote($idNote, $noteData);
+            $this->pdoNoteModel->edit($idNote, $noteData);
             $this->pageRedirect('./', ['before' => 'editedNote']);
         }
 
@@ -89,7 +89,7 @@ class ActivityNoteController extends AbstractActivityController
         if ($this->request->isPostDataServer())
         {
             $idNote = (int) $this->request->postRequestParam('id');
-            $this->pdoConnector->deleteNote($idNote);
+            $this->pdoNoteModel->delete($idNote);
 
             $this->pageRedirect('./', ['before' => 'deletedNote']);
         }
@@ -106,6 +106,6 @@ class ActivityNoteController extends AbstractActivityController
             $this->pageRedirect('./', ['error' => 'missingNoteId']);
         } 
 
-        return $this->pdoConnector->getNote($idNote);       
+        return $this->pdoNoteModel->get($idNote);       
     }
 }

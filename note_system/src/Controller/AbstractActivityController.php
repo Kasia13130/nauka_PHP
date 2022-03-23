@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Note\Controller;
 
 use Note\Request;
-use Note\PDOConnector;
+use Note\Model\PDONoteModel;
 use Note\View;
 use Note\Exception\ConfigurationException;
 use Note\Exception\StorageException;
@@ -16,7 +16,7 @@ abstract class AbstractActivityController
 
     private static array $config = [];
 
-    protected PDOConnector $pdoConnector;
+    protected PDONoteModel $pdoNoteModel;
     protected Request $request;
     protected $view;
 
@@ -30,7 +30,7 @@ abstract class AbstractActivityController
         if (empty(self::$config['database'])) {
             throw new ConfigurationException('Configuration error');
         }
-        $this->pdoConnector = new PDOConnector(self::$config['database']);
+        $this->pdoNoteModel = new PDONoteModel(self::$config['database']);
         
         $this->request = $request;
         $this->view = new View();
